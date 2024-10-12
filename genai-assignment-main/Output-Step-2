@@ -1,0 +1,11 @@
+Symptom Dictionary:
+S1: {'Fever': {'mild': True, 'low': False, 'high': False}}
+S2: {'Cough': {'mild': None, 'low': None, 'high': None}}
+S3: {'Cold': {'mild': None, 'low': None, 'high': None}}
+Body Ache: {'Other Symptom': True}
+Shivering: {'Other Symptom': True}
+Head Ache: {'Other Symptom': True}
+Sickness: {'Other Symptom': True}
+Vertigo: {'Other Symptom': True}
+Loss (Symptoms not found in dictionary):
+ - Other Symptoms: Nausia (New Symptoms)

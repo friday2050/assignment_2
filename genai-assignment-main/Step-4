@@ -1,0 +1,130 @@
+import csv
+import json
+import xml.etree.ElementTree as ET
+import os
+
+# Global dictionary to store the data and keep track of dictionary loss
+symptom_dict = {}
+loss = {"Symptoms": set(), "Attributes": set()}
+
+# Function to read CSV, TSV, JSON, and XML files
+def read_file(file_path, file_type, separator=None):
+    if file_type == 'csv' or file_type == 'tsv':
+        with open(file_path, 'r') as file:
+            delimiter = ',' if file_type == 'csv' else '\t' if file_type == 'tsv' else separator
+            reader = csv.DictReader(file, delimiter=delimiter)
+            data = list(reader)
+    elif file_type == 'json':
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    elif file_type == 'xml':
+        tree = ET.parse(file_path)
+        root = tree.getroot()
+        data = []
+        for elem in root:
+            data_item = {child.tag: child.text for child in elem}
+            data.append(data_item)
+    else:
+        raise ValueError("Unsupported file type.")
+    return data
+
+# Function to enhance the dictionary with new data and attributes
+def enhance_dictionary(data):
+    global symptom_dict
+    for item in data:
+        for key, value in item.items():
+            if key not in symptom_dict:
+                symptom_dict[key] = {"Attributes": None}
+                loss["Symptoms"].add(key)
+            symptom_dict[key]["Attributes"] = value
+
+# Function to dump the dictionary into a file
+def dump_dictionary(file_name):
+    with open(file_name, 'w') as file:
+        json.dump(symptom_dict, file, indent=4)
+    print(f"Dictionary successfully saved to {file_name}")
+
+# Function to allow manual editing of the dictionary
+def manual_edit_dictionary():
+    global symptom_dict
+    while True:
+        print("Dictionary for editing (key-value pairs):")
+        for key, value in symptom_dict.items():
+            print(f"{key}: {value}")
+        key_to_edit = input("\nEnter the key to edit or 'exit' to stop: ").strip()
+        if key_to_edit.lower() == 'exit':
+            break
+        if key_to_edit in symptom_dict:
+            new_value = input(f"Enter new value for {key_to_edit}: ").strip()
+            symptom_dict[key_to_edit]["Attributes"] = new_value
+        else:
+            print(f"Key '{key_to_edit}' not found in dictionary.")
+
+# Function to print data using columns in the dictionary
+def print_data_using_dictionary(data):
+    print("Printing data using available dictionary columns...")
+    for item in data:
+        output = {key: value for key, value in item.items() if key in symptom_dict}
+        print(output)
+
+# Function to print the current dictionary loss (missing data)
+def print_loss():
+    print("Dictionary Loss Report:")
+    if loss["Symptoms"]:
+        print(f"Missing Symptoms: {', '.join(loss['Symptoms'])}")
+    else:
+        print("No missing symptoms found!")
+
+# Function to reparse data and enhance the dictionary
+def reparse_data(file_path, file_type, separator=None):
+    print(f"Reparsing data from {file_path}...")
+    data = read_file(file_path, file_type, separator)
+    enhance_dictionary(data)
+    print("Dictionary enhanced with new data.")
+    print_loss()
+
+# Main function to run the parser program
+def main():
+    print("Parser Program: Reads and processes data, enhances dictionary, and allows manual editing.")
+    while True:
+        print("\nMenu:")
+        print("1. Read and Create Dictionary")
+        print("2. Dump Dictionary to File")
+        print("3. Print Data Sets Using Dictionary")
+        print("4. Allow Manual Editing and Reparse Dictionary")
+        print("5. Exit")
+        choice = input("Enter your choice: ").strip()
+
+        if choice == '1':
+            file_path = input("Enter file path: ").strip()
+            file_type = input("Enter file type (csv, tsv, json, xml): ").strip().lower()
+            separator = input("Enter separator (if applicable): ").strip() if file_type in ['csv', 'tsv'] else None
+            data = read_file(file_path, file_type, separator)
+            enhance_dictionary(data)
+            print_loss()
+        elif choice == '2':
+            file_name = input("Enter file name to dump the dictionary (e.g., dictionary.json): ").strip()
+            dump_dictionary(file_name)
+        elif choice == '3':
+            file_path = input("Enter file path to read data: ").strip()
+            file_type = input("Enter file type (csv, tsv, json, xml): ").strip().lower()
+            separator = input("Enter separator (if applicable): ").strip() if file_type in ['csv', 'tsv'] else None
+            data = read_file(file_path, file_type, separator)
+            print_data_using_dictionary(data)
+        elif choice == '4':
+            manual_edit_dictionary()
+            reparse = input("Would you like to reparse a file to enhance the dictionary? (y/n): ").strip().lower()
+            if reparse == 'y':
+                file_path = input("Enter file path to reparse: ").strip()
+                file_type = input("Enter file type (csv, tsv, json, xml): ").strip().lower()
+                separator = input("Enter separator (if applicable): ").strip() if file_type in ['csv', 'tsv'] else None
+                reparse_data(file_path, file_type, separator)
+        elif choice == '5':
+            print("Exiting program.")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+# Run the parser program
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,83 @@
+# Initial dictionary of symptoms (for reference)
+symptom_dict = {
+    "S1": {"Fever": {"mild": None, "low": None, "high": None}},
+    "S2": {"Cough": {"mild": None, "low": None, "high": None}},
+    "S3": {"Cold": {"mild": None, "low": None, "high": None}},
+    "S4": {"Body Ache": None},
+    "S5": {"Shivering": {"mild": None, "high": None, "intermittent": None}}
+}
+
+# Loss dictionary to track missing symptoms or attributes
+loss = {
+    "Symptoms": set(),
+    "Attributes": set()
+}
+
+# Patient observations dataset
+patients = [
+    {"Patient_Id": "000000001", "Observation": "Body Ache, Head Ache", "Particulars": "Low Body Ache, High Head Ache", "Time Period": "In Morning", "Location": {"City": None, "State": None, "Country": None, "Pincode": None}},
+    {"Patient_Id": "000000002", "Observation": "Body Ache, Shivering", "Particulars": "High Shivering", "Time Period": "In Afternoon", "Location": {"City": None, "State": None, "Country": None, "Pincode": None}},
+    {"Patient_Id": "000000003", "Observation": "Shivering, Nausia", "Particulars": "Low Nausia", "Time Period": "Throughout", "Location": {"City": None, "State": None, "Country": None, "Pincode": None}},
+    {"Patient_Id": "000000004", "Observation": "No observation", "Particulars": "No observation", "Time Period": "No observation", "Location": {"City": None, "State": None, "Country": None, "Pincode": None}},
+    {"Patient_Id": "000000005", "Observation": "Intermittent mild fever", "Particulars": None, "Time Period": None, "Location": {"City": None, "State": None, "Country": None, "Pincode": None}},
+    {"Patient_Id": "000000006", "Observation": "Continuous high fever", "Particulars": None, "Time Period": None, "Location": {"City": None, "State": None, "Country": None, "Pincode": None}},
+    {"Patient_Id": "000000007", "Observation": "Intermittent Shivering", "Particulars": None, "Time Period": None, "Location": {"City": None, "State": None, "Country": None, "Pincode": None}},
+]
+
+# Function to update the dictionary with new data
+def enhance_symptom_dictionary(patients, symptom_dict, loss):
+    for patient in patients:
+        observations = patient["Observation"].split(", ")
+        particulars = patient["Particulars"]
+        time_period = patient["Time Period"]
+        location = patient["Location"]
+
+        # Update the dictionary with new observations
+        for obs in observations:
+            if obs not in symptom_dict:
+                # Add new observation if not in the dictionary
+                symptom_dict[obs] = {"Attributes": None}
+                loss["Symptoms"].add(obs)  # Track it as a new symptom
+
+            # Attach attributes
+            symptom_dict[obs] = {
+                "Particulars": particulars if particulars else "N/A",
+                "Time Period": time_period if time_period else "N/A",
+                "Location": {
+                    "City": location["City"] if location["City"] else "N/A",
+                    "State": location["State"] if location["State"] else "N/A",
+                    "Country": location["Country"] if location["Country"] else "N/A",
+                    "Pincode": location["Pincode"] if location["Pincode"] else "N/A"
+                }
+            }
+
+        # Track any missing attributes
+        if not particulars:
+            loss["Attributes"].add(f"Particulars for {observations}")
+        if not time_period:
+            loss["Attributes"].add(f"Time Period for {observations}")
+        if not all(location.values()):
+            loss["Attributes"].add(f"Location for {observations}")
+
+# Function to print out the losses
+def print_loss(loss):
+    print("Loss (Symptoms or Attributes not found):")
+    if loss["Symptoms"]:
+        print(f" - Missing Symptoms: {', '.join(loss['Symptoms'])}")
+    if loss["Attributes"]:
+        print(f" - Missing Attributes: {', '.join(loss['Attributes'])}")
+    if not loss["Symptoms"] and not loss["Attributes"]:
+        print(" - No losses detected!")
+
+# Function to print the enhanced dictionary
+def print_enhanced_dictionary(symptom_dict):
+    print("Enhanced Symptom Dictionary:")
+    for key, value in symptom_dict.items():
+        print(f"{key}: {value}")
+
+# Enhance the dictionary with the new data from patients
+enhance_symptom_dictionary(patients, symptom_dict, loss)
+
+# Print the enhanced dictionary and the loss
+print_enhanced_dictionary(symptom_dict)
+print_loss(loss)

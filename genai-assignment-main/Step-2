@@ -1,0 +1,74 @@
+ Initial dataset of symptoms in a dictionary (for reference)
+symptom_dict = {
+    "S1": {"Fever": {"mild": None, "low": None, "high": None}},
+    "S2": {"Cough": {"mild": None, "low": None, "high": None}},
+    "S3": {"Cold": {"mild": None, "low": None, "high": None}}
+}
+
+# Additional symptoms dictionary
+additional_symptoms = set(["Body Ache", "Shivering", "Head Ache", "Nausea", "Sickness", "Vertigo"])
+
+# Initial loss dictionary to track missing symptoms
+loss = {
+    "Fever": False,
+    "Cough": False,
+    "Cold": False,
+    "Other Symptoms": set()
+}
+
+# Dataset in memory (sample)
+patients = [
+    {"Patient_Id": "000000001", "Fever": {"mild": "Y", "low": "N", "high": "N"}, "Other Symptoms": "Body Ache"},
+    {"Patient_Id": "000000002", "Fever": {"mild": "Y", "low": "N", "high": "N"}, "Other Symptoms": "Shivering"},
+    {"Patient_Id": "000000003", "Fever": {"mild": "Y", "low": "N", "high": "N"}, "Other Symptoms": "Head Ache"},
+    {"Patient_Id": "000000004", "Fever": {"mild": "Y", "low": "N", "high": "N"}, "Other Symptoms": "Nausia"},
+    {"Patient_Id": "000000005", "Fever": {"mild": "Y", "low": "N", "high": "N"}, "Other Symptoms": "Sickness"},
+    {"Patient_Id": "000000006", "Fever": {"mild": "Y", "low": "N", "high": "N"}, "Other Symptoms": "Vertigo"},
+    {"Patient_Id": "000000007", "Fever": {"mild": "Y", "low": "N", "high": "N"}, "Other Symptoms": "Head Ache"},
+    {"Patient_Id": "000000008", "Fever": {"mild": "Y", "low": "N", "high": "N"}, "Other Symptoms": "Nausia"},
+    {"Patient_Id": "000000009", "Fever": {"mild": "Y", "low": "N", "high": "N"}, "Other Symptoms": "Sickness"},
+    {"Patient_Id": "000000010", "Fever": {"mild": "Y", "low": "N", "high": "N"}, "Other Symptoms": "Vertigo, Nausia"}
+]
+
+# Function to read the dataset and update the dictionary with found symptoms
+def update_symptom_dictionary(patients, symptom_dict, additional_symptoms, loss):
+    for patient in patients:
+        # Check for Fever in different severities
+        fever_data = patient["Fever"]
+        for severity, status in fever_data.items():
+            if status == "Y":
+                symptom_dict["S1"]["Fever"][severity] = True
+            elif status == "N":
+                symptom_dict["S1"]["Fever"][severity] = False
+            else:
+                loss["Fever"] = True  # Track missing or unclear data
+        
+        # Check for other symptoms
+        other_symptoms = patient["Other Symptoms"].split(", ")
+        for sym in other_symptoms:
+            if sym in additional_symptoms:
+                if sym not in symptom_dict:
+                    symptom_dict[sym] = {"Other Symptom": True}
+            else:
+                loss["Other Symptoms"].add(sym)
+
+# Function to print out the losses (missing or new symptom columns)
+def print_loss(loss):
+    print("Loss (Symptoms not found in dictionary):")
+    for key, value in loss.items():
+        if isinstance(value, bool):
+            if value:
+                print(f" - {key}: Missing severity data")
+        elif isinstance(value, set) and value:
+            print(f" - {key}: {', '.join(value)} (New Symptoms)")
+
+# Update the dictionary with the patient data
+update_symptom_dictionary(patients, symptom_dict, additional_symptoms, loss)
+
+# Print out the final symptom dictionary
+print("Symptom Dictionary:")
+for key, value in symptom_dict.items():
+    print(f"{key}: {value}")
+
+# Print out the missing or new symptoms found in the data
+print_loss(loss)

@@ -1,0 +1,17 @@
+Enhanced Symptom Dictionary:
+S1: {'Fever': {'mild': None, 'low': None, 'high': None}}
+S2: {'Cough': {'mild': None, 'low': None, 'high': None}}
+S3: {'Cold': {'mild': None, 'low': None, 'high': None}}
+S4: {'Body Ache': None}
+S5: {'Shivering': {'mild': None, 'high': None, 'intermittent': None}}
+Body Ache: {'Particulars': 'High Shivering', 'Time Period': 'In Afternoon', 'Location': {'City': 'N/A', 'State': 'N/A', 'Country': 'N/A', 'Pincode': 'N/A'}}
+Head Ache: {'Particulars': 'Low Body Ache, High Head Ache', 'Time Period': 'In Morning', 'Location': {'City': 'N/A', 'State': 'N/A', 'Country': 'N/A', 'Pincode': 'N/A'}}
+Shivering: {'Particulars': 'Low Nausia', 'Time Period': 'Throughout', 'Location': {'City': 'N/A', 'State': 'N/A', 'Country': 'N/A', 'Pincode': 'N/A'}}
+Nausia: {'Particulars': 'Low Nausia', 'Time Period': 'Throughout', 'Location': {'City': 'N/A', 'State': 'N/A', 'Country': 'N/A', 'Pincode': 'N/A'}}
+No observation: {'Particulars': 'No observation', 'Time Period': 'No observation', 'Location': {'City': 'N/A', 'State': 'N/A', 'Country': 'N/A', 'Pincode': 'N/A'}}
+Intermittent mild fever: {'Particulars': 'N/A', 'Time Period': 'N/A', 'Location': {'City': 'N/A', 'State': 'N/A', 'Country': 'N/A', 'Pincode': 'N/A'}}
+Continuous high fever: {'Particulars': 'N/A', 'Time Period': 'N/A', 'Location': {'City': 'N/A', 'State': 'N/A', 'Country': 'N/A', 'Pincode': 'N/A'}}
+Intermittent Shivering: {'Particulars': 'N/A', 'Time Period': 'N/A', 'Location': {'City': 'N/A', 'State': 'N/A', 'Country': 'N/A', 'Pincode': 'N/A'}}
+Loss (Symptoms or Attributes not found):
+ - Missing Symptoms: Body Ache, Continuous high fever, Intermittent mild fever, Nausia, Intermittent Shivering, No observation, Head Ache, Shivering
+ - Missing Attributes: Location for ['Intermittent Shivering'], Location for ['Body Ache', 'Shivering'], Location for ['Body Ache', 'Head Ache'], Location for ['Intermittent mild fever'], Location for ['Continuous high fever'], Location for ['Shivering', 'Nausia'], Particulars for ['Continuous high fever'], Particulars for ['Intermittent Shivering'], Time Period for ['Continuous high fever'], Particulars for ['Intermittent mild fever'], Location for ['No observation'], Time Period for ['Intermittent Shivering'], Time Period for ['Intermittent mild fever']
